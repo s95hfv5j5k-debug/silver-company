@@ -1,0 +1,693 @@
+<!DOCTYPE html>
+<html lang="sk">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <title>Silver Company — Autoservis Bratislava</title>
+  <style>
+    :root{
+      --bg:#0f1114;        /* deep charcoal */
+      --card:#161a20;      /* dark card */
+      --silver:#cbd5e1;    /* muted text */
+      --accent:#0A5BFF;    /* electric blue */
+      --text:#ffffff;      /* primary text */
+      --muted:#94a3b8;     /* secondary text */
+      --ring:rgba(10,91,255,.35);
+      --radius:18px;
+      --shadow:0 14px 38px rgba(0,0,0,.6);
+    }
+    html,body{height:100%;}
+    html{scroll-behavior:smooth;}
+    body{margin:0;background:linear-gradient(180deg,#0f1114,#0b0d11);color:var(--text);font:16px/1.6 "Poppins",ui-sans-serif,system-ui,-apple-system,Segoe UI,Roboto,Arial;}
+    *{box-sizing:border-box}
+
+    html,body,#app{width:100%;max-width:100vw;overflow-x:hidden;background:var(--bg);} 
+    #app{isolation:isolate;}
+
+    a{color:var(--accent);text-decoration:none}
+    .container{width:min(1200px,92vw);margin-inline:auto;padding:24px}
+
+    /* NAV */
+    .nav{position:sticky;top:0;z-index:20;backdrop-filter:saturate(140%) blur(10px);background:linear-gradient(180deg, rgba(10,10,10,.95), rgba(10,10,10,.85));border-bottom:1px solid rgba(255,255,255,.1)}
+    .nav .inner{display:flex;align-items:center;gap:20px;justify-content:space-between}
+    .brand{display:flex;align-items:center;gap:12px;font-weight:700;letter-spacing:.4px}
+    .brand svg{width:28px;height:28px}
+    .menu{display:flex;gap:18px;flex-wrap:wrap}
+    .menu a{padding:10px 14px;border-radius:999px;color:var(--text);opacity:.92}
+    .menu a:hover,.menu a.active{background:rgba(255,255,255,.08);}
+
+    /* LANGUAGE SWITCH */
+    .lang{display:flex;gap:8px}
+    .lang button{background:transparent;border:1px solid rgba(255,255,255,.12);color:var(--text);padding:8px 10px;border-radius:999px;cursor:pointer}
+    .lang button.active{border-color:var(--accent);box-shadow:0 0 0 3px var(--ring)}
+
+    /* HERO */
+    .hero{position:relative;min-height:92svh;display:grid;place-items:center;}
+    .hero .backdrop{position:absolute;inset:0;overflow:hidden;background:linear-gradient(135deg,#11161e,#0b0f16);} /* you can override via picker */
+    .hero .overlay{position:absolute;inset:0;background:linear-gradient(180deg, rgba(0,0,0,.55), rgba(0,0,0,.75));}
+    .hero .content{position:relative;text-align:center;padding:28px;z-index:1;color:#fff;text-shadow:0 2px 16px rgba(0,0,0,.7)}
+    .title{font-size:clamp(34px,6vw,64px);font-weight:800;letter-spacing:.6px;margin:0 0 10px;color:#fff}
+    .subtitle{font-size:clamp(16px,2.2vw,22px);color:#d1d5db;margin:0 0 18px}
+    .cta{display:flex;gap:12px;justify-content:center;flex-wrap:wrap}
+    .btn{border:none;border-radius:999px;padding:14px 22px;font-weight:600;cursor:pointer}
+    .btn.primary{background:var(--accent);color:white;box-shadow:0 8px 24px rgba(31,111,255,.35)}
+    .btn.ghost{background:rgba(255,255,255,.12);color:#fff;border:1px solid rgba(255,255,255,.28)}
+    .editbtn{position:absolute;right:12px;top:12px;z-index:5;background:rgba(255,255,255,.9);color:#0f172a;border:1px solid rgba(2,6,23,.12);border-radius:999px;padding:6px 10px;font-size:12px;cursor:pointer;box-shadow:0 4px 10px rgba(2,6,23,.12)}
+
+    /* SECTIONS */
+    section{scroll-margin-top:90px;padding-block:72px}
+    h2.section-title{font-size:clamp(26px,3.8vw,36px);margin:0 0 24px}
+    p.lead{color:var(--muted);max-width:70ch}
+
+    /* ABOUT */
+    .about{background:linear-gradient(180deg, rgba(255,255,255,.06), rgba(255,255,255,.03))}
+    .about-grid{display:grid;grid-template-columns:1.15fr 1fr;gap:28px}
+    .card{background:var(--card);border:1px solid rgba(255,255,255,.08);border-radius:var(--radius);padding:24px;box-shadow:var(--shadow)}
+
+    /* SERVICES */
+    .services-grid{display:grid;grid-template-columns:repeat(6,1fr);gap:16px}
+    @media (max-width:1100px){.services-grid{grid-template-columns:repeat(3,1fr)}}
+    @media (max-width:700px){.services-grid{grid-template-columns:repeat(2,1fr)}}
+    .service{background:linear-gradient(180deg,#1a1f27,#151922);border:1px solid rgba(255,255,255,.08);border-radius:16px;padding:18px;transition:transform .2s ease, box-shadow .2s ease}
+    .service:hover{transform:translateY(-4px);box-shadow:0 14px 30px rgba(0,0,0,.55)}
+    .service svg{width:28px;height:28px}
+    .service h3{margin:10px 0 4px;font-size:18px}
+    .service .price{display:inline-block;margin:0 0 6px;padding:4px 10px;border:1px solid rgba(255,255,255,.18);border-radius:999px;color:#e2e8f0;font-size:13px;background:rgba(255,255,255,.06)}
+    .service p{margin:0;color:#a7b0be}
+
+    /* GALLERY */
+    .gallery-grid{display:grid;gap:10px;grid-template-columns:repeat(6,1fr)}
+    @media (max-width:1100px){.gallery-grid{grid-template-columns:repeat(3,1fr)}}
+    @media (max-width:700px){.gallery-grid{grid-template-columns:repeat(2,1fr)}}
+    .tile{position:relative;aspect-ratio:4/3;border-radius:14px;overflow:hidden;background:#12161d;border:1px solid rgba(255,255,255,.08)}
+    .tile img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+    .tile .label{position:absolute;bottom:8px;left:10px;background:rgba(0,0,0,.5);padding:6px 10px;border-radius:999px;font-size:12px}
+    .tile:hover .editbtn{opacity:1}
+
+    /* LIGHTBOX */
+    .lightbox{position:fixed;inset:0;background:rgba(0,0,0,.8);display:none;align-items:center;justify-content:center;padding:4vw;z-index:50}
+    .lightbox.open{display:flex}
+    .lightbox .frame{width:min(1100px,92vw);aspect-ratio:16/10;background:linear-gradient(135deg, #1a1f2b, #0f1420);border-radius:16px;border:1px solid rgba(255,255,255,.12);position:relative}
+    .lightbox .close{position:absolute;top:10px;right:10px;background:rgba(255,255,255,.1);border:0;color:white;padding:10px 12px;border-radius:999px;cursor:pointer}
+
+    /* CONTACT */
+    .contact-grid{display:grid;grid-template-columns:1.1fr .9fr;gap:20px}
+    @media (max-width:900px){.contact-grid{grid-template-columns:1fr}}
+    form label{display:block;margin:12px 0 6px;color:var(--silver)}
+    input,textarea{width:100%;background:#0f131a;color:#e5e7eb;border:1px solid rgba(255,255,255,.1);border-radius:12px;padding:12px;box-shadow:inset 0 1px 0 rgba(255,255,255,.03)}
+    textarea{min-height:120px;resize:vertical}
+    .map{background:linear-gradient(180deg,#121722,#0e131d);border:1px solid rgba(255,255,255,.08);border-radius:16px;padding:18px;display:grid;place-items:center;text-align:center}
+    .map svg{width:82%;max-width:520px;height:auto}
+
+    /* FOOTER */
+    footer{padding:26px 0;border-top:1px solid rgba(255,255,255,.08);color:#9aa6b2;text-align:center;background:transparent}
+  </style>
+</head>
+<body>
+<div id="app">
+  <!-- NAVBAR -->
+  <nav class="nav">
+    <div class="inner container">
+      <div class="brand" aria-label="Silver Company">
+        <svg viewBox="0 0 64 64" fill="none" aria-hidden="true"><defs><linearGradient id="g" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#c0c0c0"/><stop offset="1" stop-color="#5f8cff"/></linearGradient></defs><path d="M12 12h20v10h8v8H32v10l10 10-8 8-10-10H12V12Z" stroke="url(#g)" stroke-width="3"/></svg>
+        <span>SILVER COMPANY</span>
+      </div>
+      <div class="menu">
+        <a href="#home" class="active" data-i18n="menu.home">Home</a>
+        <a href="#about" data-i18n="menu.about">About</a>
+        <a href="#services" data-i18n="menu.services">Services</a>
+        <a href="#gallery" data-i18n="menu.gallery">Gallery</a>
+        <a href="#contact" data-i18n="menu.contact">Contact</a>
+      </div>
+      <div class="lang" role="group" aria-label="language">
+        <button data-lang="sk" class="active">SK</button>
+        <button data-lang="ru">RU</button>
+        <button data-lang="ua">UA</button>
+      </div>
+    </div>
+  </nav>
+
+  <!-- HERO -->
+  <header id="home" class="hero" aria-label="Hero">
+    <!-- Removed add-photo button -->
+    <div class="backdrop"></div>
+    <div class="overlay" aria-hidden="true"></div>
+    <div class="content container">
+      <h1 class="title" data-i18n="hero.title">SILVER COMPANY</h1>
+      <p class="subtitle" data-i18n="hero.subtitle">Spoľahlivý autoservis v Bratislave</p>
+      <p class="subtitle" data-i18n="hero.list">Olej, brzdy, rozvody, klimatizácie, pneuservis.</p>
+      <div class="cta">
+        <a class="btn primary" href="#contact" data-i18n="cta.book">Objednať sa</a>
+        <a class="btn ghost" href="#services" data-i18n="cta.services">Pozrieť služby</a>
+      </div>
+      <div class="chips" style="display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin-top:14px">
+        <span style="background:rgba(255,255,255,.14);border:1px solid rgba(255,255,255,.28);padding:8px 12px;border-radius:999px;color:#fff">📍 Bratislava</span>
+        <a href="tel:+421949725946" style="background:rgba(255,255,255,.14);border:1px solid rgba(255,255,255,.28);padding:8px 12px;border-radius:999px;color:#fff">📞 +421 949 725 946</a>
+        <a href="mailto:kavalenkaigor@gmail.com" style="background:rgba(255,255,255,.14);border:1px solid rgba(255,255,255,.28);padding:8px 12px;border-radius:999px;color:#fff">✉️ kavalenkaigor@gmail.com</a>
+      </div>
+    </div>
+  </header>
+
+  <!-- ABOUT -->
+  <section id="about" class="about">
+    <div class="container about-grid">
+      <div class="card">
+        <h2 class="section-title" data-i18n="about.title">O nás</h2>
+        <p class="lead" data-i18n="about.p1">Silver Company je profesionálny autoservis v Bratislave s dôrazom na kvalitu, rýchlosť a spoľahlivosť. Zabezpečíme bežnú údržbu aj komplexné opravy.</p>
+        <p class="lead" data-i18n="about.p2">Rozprávame po slovensky, rusky a ukrajinsky. Vyberáme si férovú komunikáciu a transparentné ceny.</p>
+      </div>
+      <div class="card" aria-label="badges">
+        <ul style="list-style:none;padding:0;margin:0;display:grid;grid-template-columns:repeat(2,1fr);gap:12px">
+          <li>✅ <span data-i18n="badges.b1">Záruka na prácu</span></li>
+          <li>⚡ <span data-i18n="badges.b2">Rýchle termíny</span></li>
+          <li>🛠️ <span data-i18n="badges.b3">Diagnostika všetkých značiek</span></li>
+          <li>💬 <span data-i18n="badges.b4">SK / RU / UA</span></li>
+        </ul>
+        <div style="margin-top:14px;display:grid;grid-template-columns:repeat(3,1fr);gap:10px">
+          <div style="background:#1a1f27;border:1px solid rgba(255,255,255,.08);border-radius:12px;padding:10px;text-align:center"><strong>24h</strong><div style="color:var(--muted)">Rýchla diagnostika</div></div>
+          <div style="background:#1a1f27;border:1px solid rgba(255,255,255,.08);border-radius:12px;padding:10px;text-align:center"><strong>+300</strong><div style="color:var(--muted)">Servisov/rok</div></div>
+          <div style="background:#1a1f27;border:1px solid rgba(255,255,255,.08);border-radius:12px;padding:10px;text-align:center"><strong>2 roky</strong><div style="color:var(--muted)">Záruka na prácu</div></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- SERVICES -->
+  <section id="services">
+    <div class="container">
+      <h2 class="section-title" data-i18n="services.title">Služby</h2>
+      <div class="services-grid">
+        <div class="service">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M4 4h6v6H4zM14 4h6v6h-6zM4 14h6v6H4zM14 14h6v6h-6z"/></svg>
+          <h3 data-i18n="s.oil.t">Výmena oleja a filtrov</h3>
+          <div class="price" data-i18n="s.oil.p">od 49 €</div>
+          <p data-i18n="s.oil.d">Rýchla výmena motorového oleja a filtrov.</p>
+        </div>
+        <div class="service">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="12" cy="12" r="8"/><path d="M3 12h6M15 12h6"/></svg>
+          <h3 data-i18n="s.brakes.t">Brzdy a rozvody</h3>
+          <div class="price" data-i18n="s.brakes.p">od 79 €</div>
+          <p data-i18n="s.brakes.d">Kontrola, oprava a výmena bŕzd a rozvodov.</p>
+        </div>
+        <div class="service">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M4 8h16v8H4z"/><path d="M8 12h8"/></svg>
+          <h3 data-i18n="s.ac.t">Klimatizácia</h3>
+          <div class="price" data-i18n="s.ac.p">od 49 €</div>
+          <p data-i18n="s.ac.d">Čistenie, dopĺňanie a oprava klimatizácie.</p>
+        </div>
+        <div class="service">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="8" cy="17" r="3"/><circle cx="16" cy="17" r="3"/><path d="M2 12h20"/></svg>
+          <h3 data-i18n="s.tyres.t">Pneuservis</h3>
+          <p data-i18n="s.tyres.d">Prezutie, vyváženie a oprava pneumatík.</p>
+        </div>
+        <div class="service">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M3 4h18v6H3z"/><path d="M8 14h8M6 18h12"/></svg>
+          <h3 data-i18n="s.diag.t">Diagnostika</h3>
+          <div class="price" data-i18n="s.diag.p">od 29 €</div>
+          <p data-i18n="s.diag.d">Diagnostika vozidiel všetkých značiek.</p>
+        </div>
+        <div class="service">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M4 14l8-8 8 8M12 6v12"/></svg>
+          <h3 data-i18n="s.engine.t">Opravy motora a karosérie</h3>
+          <p data-i18n="s.engine.d">Kompletný servis motora a karosérie.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- PRICING -->
+  <section id="pricing">
+    <div class="container">
+      <h2 class="section-title">Cenník služieb</h2>
+      <div class="card" style="overflow:hidden">
+        <table style="width:100%;border-collapse:collapse">
+          <thead>
+            <tr style="background:#151a22">
+              <th style="text-align:left;padding:14px 16px;border-bottom:1px solid rgba(255,255,255,.08)">Služba</th>
+              <th style="text-align:right;padding:14px 16px;border-bottom:1px solid rgba(255,255,255,.08)">Cena od</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr><td style="padding:12px 16px;border-bottom:1px solid rgba(255,255,255,.08)">Výmena oleja a filtrov</td><td style="padding:12px 16px;text-align:right;border-bottom:1px solid rgba(255,255,255,.08)">49 €</td></tr>
+            <tr><td style="padding:12px 16px;border-bottom:1px solid rgba(255,255,255,.08)">Brzdy (predná/komplet)</td><td style="padding:12px 16px;text-align:right;border-bottom:1px solid rgba(255,255,255,.08)">79 €</td></tr>
+            <tr><td style="padding:12px 16px;border-bottom:1px solid rgba(255,255,255,.08)">Klimatizácia (plnenie/servis)</td><td style="padding:12px 16px;text-align:right;border-bottom:1px solid rgba(255,255,255,.08)">49 €</td></tr>
+            <tr><td style="padding:12px 16px;border-bottom:1px solid rgba(255,255,255,.08)">Diagnostika</td><td style="padding:12px 16px;text-align:right;border-bottom:1px solid rgba(255,255,255,.08)">29 €</td></tr>
+            <tr><td style="padding:12px 16px;border-bottom:1px solid rgba(255,255,255,.08)">Výmena oleja v automatickej prevodovke</td><td style="padding:12px 16px;text-align:right;border-bottom:1px solid rgba(255,255,255,.08)">120 €</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="cta" style="margin-top:16px;justify-content:flex-start">
+        <a class="btn primary" href="#contact">Objednať sa</a>
+        <a class="btn ghost" href="#services">Pozrieť služby</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- WHY US -->
+  <section id="why">
+    <div class="container">
+      <h2 class="section-title">Prečo práve Silver Company?</h2>
+      <div class="services-grid">
+        <div class="service"><h3>Rýchle termíny</h3><p>Rýchloservis a flexibilné objednávky — bez zbytočného čakania.</p></div>
+        <div class="service"><h3>Transparentné ceny</h3><p>Platíte len za dohodnuté práce. Ceny od: olej 49 €, brzdy 79 €, klima 49 €, diagnostika 29 €.</p></div>
+        <div class="service"><h3>Všetky značky</h3><p>Osobné aj úžitkové vozidlá. Špecializácia na Volvo a európske značky.</p></div>
+        <div class="service"><h3>Kompletný servis</h3><p>Všetko pod jednou strechou: olej, brzdy, rozvody, klíma, pneuservis.</p></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- PROCESS -->
+  <section id="process" class="about">
+    <div class="container about-grid">
+      <div class="card">
+        <h2 class="section-title">Ako to prebieha?</h2>
+        <ol style="margin:0;padding-left:20px">
+          <li><strong>Objednávka online alebo telefonicky.</strong> Vyberiete službu a čas. Pošleme vám cenový odhad.</li>
+          <li><strong>Príchod do servisu.</strong> Adresa: Vinohradnicka 3, Bratislava. Môžete počkať u nás alebo sa zastaviť neskôr.</li>
+          <li><strong>Vyzdvihnutie vozidla.</strong> Práce vykonáme podľa dohody, všetko vysvetlíme a pripravíme auto na cestu.</li>
+        </ol>
+      </div>
+      <div class="card">
+        <h3 style="margin-top:0">Rezervácia termínu</h3>
+        <p>Vyberte si spôsob, ktorý vám vyhovuje:</p>
+        <div class="cta" style="justify-content:flex-start">
+          <a class="btn primary" href="#contact">Rezervovať online</a>
+          <a class="btn ghost" href="#contact">Potrebujem konzultáciu</a>
+          <a class="btn ghost" href="tel:+421949725946">Zavolať</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+ <!-- REVIEWS -->
+<section id="reviews">
+  <div class="container">
+    <h2 class="section-title">Napísali o nás</h2>
+    <div class="about-grid">
+      <div class="card">
+        <p class="lead">„Veľmi spokojný s rýchlosťou a kvalitou servisu. Auto mi opravili ešte v ten deň. Určite odporúčam!“</p>
+        <p>— Martin K., Bratislava</p>
+      </div>
+      <div class="card">
+        <p class="lead">„Skvelý prístup a férové ceny. Diagnostika bola presná a servis prebehol bez problémov.“</p>
+        <p>— Jana L., Podunajské Biskupice</p>
+      </div>
+      <div class="card">
+        <p class="lead">„Dlhodobo servisujem u nich firemné vozidlá. Vždy dodržia termín a auto je pripravené ako nové.“</p>
+        <p>— Igor S., Fleet manager</p>
+      </div>
+      <div class="card">
+        <p class="lead">„Potreboval som rýchlo vymeniť brzdy pred cestou. Zavolal som ráno a poobede bolo hotovo. Top!“</p>
+        <p>— Alexei R., Ružinov</p>
+      </div>
+    </div>
+    <p style="margin-top:14px;color:var(--muted)">* Recenzie sú od reálnych zákazníkov. Overené cez email alebo telefonický kontakt.</p>
+  </div>
+</section>
+
+  <!-- GALLERY -->
+  <section id="gallery">
+    <div class="container">
+      <h2 class="section-title" data-i18n="gallery.title">Galéria</h2>
+      <div class="gallery-grid" id="galleryGrid">
+        <div class="tile" data-tile="1" role="button" title="Open">
+          <img src="" alt="Silver Company - workshop photo slot 1"/>
+          <span class="label">Silver Company</span>
+        </div>
+        <div class="tile" data-tile="2" role="button">
+          <img src="" alt="Workshop photo slot 2"/>
+          <span class="label" data-i18n="g.workshop">Dielňa</span>
+        </div>
+        <div class="tile" data-tile="3" role="button">
+          <img src="" alt="Workshop photo slot 3"/>
+          <span class="label" data-i18n="g.tools">Náradie</span>
+        </div>
+        <div class="tile" data-tile="4" role="button">
+          <img src="" alt="Workshop photo slot 4"/>
+          <span class="label" data-i18n="g.tyres">Pneuservis</span>
+        </div>
+        <div class="tile" data-tile="5" role="button">
+          <img src="" alt="Promo slot"/>
+          <span class="label" data-i18n="g.ac">Klimatizácia</span>
+        </div>
+        <div class="tile" data-tile="6" role="button">
+          <img src="" alt="Extra slot"/>
+          <span class="label" data-i18n="g.diagn">Diagnostika</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- LIGHTBOX MODAL -->
+    <div class="lightbox" id="lightbox" aria-modal="true" role="dialog" aria-label="gallery viewer">
+      <div class="frame">
+        <button class="close" onclick="closeLightbox()">✕</button>
+        <div id="lightboxSlot" style="position:absolute;inset:0;border-radius:16px;overflow:hidden"></div>
+      </div>
+    </div>
+  </section>
+
+ 
+  <footer>
+    © <span id="year"></span> Silver Company — Bratislava • <span data-i18n="footer.rights">Všetky práva vyhradené</span>
+  </footer>
+</div>
+
+<script>
+// Sticky menu active link highlight
+const links = document.querySelectorAll('.menu a');
+const sections = [...links].map(a => document.querySelector(a.getAttribute('href')));
+const setActive = () => {
+  const y = window.scrollY + 120;
+  sections.forEach((sec, i) => {
+    if (!sec) return;
+    const top = sec.offsetTop, bottom = top + sec.offsetHeight;
+    links[i].classList.toggle('active', y >= top && y < bottom);
+  });
+};
+window.addEventListener('scroll', setActive);
+setActive();
+
+// Force smooth in Canva/FB webview (anchors sometimes blocked)
+document.querySelectorAll('a[href^="#"]').forEach(a=>{
+  a.addEventListener('click', e=>{
+    const id = a.getAttribute('href');
+    const el = document.querySelector(id);
+    if(el){ e.preventDefault(); el.scrollIntoView({behavior:'smooth',block:'start'}); history.replaceState(null,'',id); }
+  });
+});
+
+// Lightbox
+const lb = document.getElementById('lightbox');
+const slot = document.getElementById('lightboxSlot');
+function closeLightbox(){lb.classList.remove('open');slot.innerHTML='';}
+[...document.querySelectorAll('.tile')].forEach(t=>{
+  t.addEventListener('click',()=>{
+    slot.innerHTML = t.innerHTML; // reuse content
+    lb.classList.add('open');
+  })
+});
+lb.addEventListener('click',e=>{ if(e.target===lb) closeLightbox(); });
+
+/* ======================================================
+   IMAGE PERSISTENCE — QUOTA-SAFE (avoids QuotaExceededError)
+   - Compresses images before saving to localStorage
+   - Limits per-item size and total budget
+   - Falls back to sessionStorage (per-tab) or in-memory cache
+   - Provides import/export helpers (triggered via console)
+   ====================================================== */
+const IMG_MAX_W = 1600;       // px
+const IMG_MAX_H = 1000;       // px
+const JPEG_QUALITY = 0.72;    // initial quality
+const LS_ITEM_LIMIT = 280 * 1024;  // ~280 KB per item
+const LS_TOTAL_LIMIT = 2 * 1024 * 1024; // ~2 MB soft budget
+const imageCache = new Map(); // in-memory fallback
+
+function estBytes(str){ return new Blob([str]).size; }
+function lsUsed(){
+  let sum = 0; for(let i=0;i<localStorage.length;i++){ const k=localStorage.key(i); const v=localStorage.getItem(k)||''; sum += k.length + v.length; }
+  return sum;
+}
+
+function drawCompressed(dataUrl, maxW=IMG_MAX_W, maxH=IMG_MAX_H, q=JPEG_QUALITY){
+  return new Promise((resolve, reject)=>{
+    const img = new Image();
+    img.onload = ()=>{
+      const ratio = Math.min(1, maxW/img.width, maxH/img.height);
+      const w = Math.max(1, Math.round(img.width*ratio));
+      const h = Math.max(1, Math.round(img.height*ratio));
+      const c = document.createElement('canvas'); c.width=w; c.height=h;
+      const ctx = c.getContext('2d');
+      ctx.drawImage(img,0,0,w,h);
+      try{ const out = c.toDataURL('image/jpeg', q); resolve(out); }
+      catch(err){ reject(err); }
+    };
+    img.onerror = reject;
+    img.src = dataUrl;
+  });
+}
+
+async function safeStoreImage(key, dataUrl){
+  let out = await drawCompressed(dataUrl);
+  if(estBytes(out) > LS_ITEM_LIMIT){ out = await drawCompressed(dataUrl, 1280, 900, 0.6); }
+  try{
+    if(lsUsed() + estBytes(out) > LS_TOTAL_LIMIT){
+      const keys = Object.keys(localStorage).filter(k=>/^sc-(hero|g\d+)$/.test(k)).sort();
+      while(keys.length && (lsUsed() + estBytes(out) > LS_TOTAL_LIMIT)){
+        const k = keys.shift(); localStorage.removeItem(k);
+      }
+    }
+    localStorage.setItem(key, out);
+  }catch(e){
+    try{ sessionStorage.setItem(key+':session', out); }catch(_){ }
+    imageCache.set(key, dataUrl);
+    console.warn('Quota hit. Using session/memory for', key);
+  }
+}
+
+function loadStoredImage(key){
+  const ls = localStorage.getItem(key);
+  if(ls) return ls;
+  const ss = sessionStorage.getItem(key+':session');
+  if(ss) return ss;
+  if(imageCache.has(key)) return imageCache.get(key);
+  return '';
+}
+
+// File picker (UI as before)
+function pickFile(cb){
+  const inp = document.createElement('input');
+  inp.type='file'; inp.accept='image/*';
+  inp.onchange = ()=>{
+    const f = inp.files[0]; if(!f) return;
+    const r = new FileReader(); r.onload = ()=> cb(r.result); r.readAsDataURL(f);
+  }; inp.click();
+}
+
+// HERO handlers
+function applyHero(){
+  const uri = loadStoredImage('sc-hero');
+  const bd = document.querySelector('.hero .backdrop');
+  if(uri){ bd.style.background = `url('${uri}') center/cover no-repeat`; }
+}
+async function setHero(){ pickFile(async uri=>{ await safeStoreImage('sc-hero', uri); applyHero(); }); }
+
+// GALLERY handlers
+function applyGallery(){
+  document.querySelectorAll('.tile').forEach((tile, idx)=>{
+    const key = 'sc-g'+(idx+1);
+    const uri = loadStoredImage(key);
+    if(uri){ const img = tile.querySelector('img'); if(img) img.src = uri; }
+  });
+}
+// bindTileEditors() removed to hide "Nastaviť foto" buttons
+
+// Contact form — Canva Sheet first, else CSV
+async function handleSubmit(e){
+  e.preventDefault();
+  const data = Object.fromEntries(new FormData(e.target).entries());
+  data.timestamp = new Date().toISOString();
+  const status = document.getElementById('formStatus');
+
+  try{
+    if(window.canva && canva.sheet && typeof canva.sheet.appendRow === 'function'){
+      await canva.sheet.appendRow(['Silver Company', data.name||'', data.phone||'', data.email||'', data.message||'', data.timestamp]);
+      status.textContent = i18n.t('form.saved');
+      e.target.reset();
+      return false;
+    }
+  }catch(err){console.warn('Canva sheet error', err)}
+
+  const head=['name','phone','email','message','timestamp'];
+  const row=head.map(h=>('"'+(data[h]||'').replace(/"/g,'""')+'"')).join(',');
+  const blob=new Blob([[head.join(',')],"\n",row].join(''),{type:'text/csv'});
+  const a=document.createElement('a'); a.href=URL.createObjectURL(blob); a.download='lead.csv'; a.click();
+  status.textContent = i18n.t('form.saved');
+  e.target.reset();
+  return false;
+}
+
+// i18n (SK/RU/UA)
+const dict = {
+  sk:{
+    menu:{home:'Home',about:'O nás',services:'Služby',gallery:'Galéria',contact:'Kontakt'},
+    hero:{title:'SILVER COMPANY',subtitle:'Spoľahlivý autoservis v Bratislave',list:'Olej, brzdy, rozvody, klimatizácie, pneuservis.'},
+    cta:{book:'Objednať sa',services:'Pozrieť služby'},
+    about:{title:'O nás',p1:'Silver Company je profesionálny autoservis v Bratislave s dôrazom na kvalitu, rýchlosť a spoľahlivosť. Zabezpečíme bežnú údržbu aj komplexné opravy.',p2:'Rozprávame po slovensky, rusky a ukrajinsky. Vyberáme si férovú komunikáciu a transparentné ceny.'},
+    badges:{b1:'Záruka na prácu',b2:'Rýchle termíny',b3:'Diagnostika všetkých značiek',b4:'SK / RU / UA'},
+    services:{title:'Služby'},
+    s:{oil:{t:'Výmena oleja a filtrov',p:'od 49 €',d:'Rýchla výmena motorového oleja a filtrov.'},brakes:{t:'Brzdy a rozvody',p:'od 79 €',d:'Kontrola, oprava a výmena bŕzd a rozvodov.'},ac:{t:'Klimatizácia',p:'od 49 €',d:'Čistenie, dopĺňanie a oprava klimatizácie.'},tyres:{t:'Pneuservis',d:'Prezutie, vyváženie a oprava pneumatík.'},diag:{t:'Diagnostika',p:'od 29 €',d:'Diagnostika vozidiel všetkých značiek.'},engine:{t:'Opravy motora a karosérie',d:'Kompletný servis motora a karosérie.'}},
+    gallery:{title:'Galéria'},
+    g:{workshop:'Dielňa',tools:'Náradie',tyres:'Pneuservis',ac:'Klimatizácia',diagn:'Diagnostika'},
+    contact:{title:'Kontakt'},
+    form:{name:'Meno',phone:'Telefón',email:'Email',msg:'Správa',send:'Odoslať',saved:'Odoslané! Ďakujeme — ozveme sa čoskoro.'},
+    map:{title:'Kde nás nájdete'},
+    footer:{rights:'Všetky práva vyhradené'}
+  },
+  ru:{
+    menu:{home:'Главная',about:'О нас',services:'Услуги',gallery:'Галерея',contact:'Контакты'},
+    hero:{title:'SILVER COMPANY',subtitle:'Профессиональный автосервис в Братиславе',list:'Масло, тормоза, ГРМ, кондиционеры, шиномонтаж.'},
+    cta:{book:'Записаться',services:'Смотреть услуги'},
+    about:{title:'О нас',p1:'Silver Company — профессиональный автосервис в Братиславе. Делаем быстро, качественно и надёжно — от ТО до сложных ремонтов.',p2:'Говорим на словацком, русском и украинском. Честно консультируем и прозрачно считаем цену.'},
+    badges:{b1:'Гарантия на работу',b2:'Быстрые сроки',b3:'Диагностика всех марок',b4:'SK / RU / UA'},
+    services:{title:'Услуги'},
+    s:{oil:{t:'Замена масла и фильтров',p:'от 49 €',d:'Быстрое обслуживание масла и фильтров.'},brakes:{t:'Тормоза и ГРМ',p:'от 79 €',d:'Проверка, ремонт и замена тормозов и ремней/цепей.'},ac:{t:'Кондиционер',p:'от 49 €',d:'Чистка, заправка и ремонт кондиционеров.'},tyres:{t:'Шиномонтаж',d:'Переобувка, балансировка и ремонт шин.'},diag:{t:'Диагностика',p:'от 29 €',d:'Профессиональная диагностика авто.'},engine:{t:'Ремонт двигателя и кузова',d:'Комплексный сервис двигателя и кузова.'}},
+    gallery:{title:'Галерея'},
+    g:{workshop:'Мастерская',tools:'Инструменты',tyres:'Шиномонтаж',ac:'Кондиционер',diagn:'Диагностика'},
+    contact:{title:'Контакты'},
+    form:{name:'Имя',phone:'Телефон',email:'Email',msg:'Сообщение',send:'Отправить',saved:'Отправлено! Мы скоро свяжемся.'},
+    map:{title:'Где мы находимся'},
+    footer:{rights:'Все права защищены'}
+  },
+  ua:{
+    menu:{home:'Головна',about:'Про нас',services:'Послуги',gallery:'Галерея',contact:'Контакти'},
+    hero:{title:'SILVER COMPANY',subtitle:'Професійний автосервіс у Братиславі',list:'Масло, гальма, ГРМ, кондиціонери, шиномонтаж.'},
+    cta:{book:'Записатися',services:'Переглянути послуги'},
+    about:{title:'Про нас',p1:'Silver Company — професійний автосервіс у Братиславі. Якість, швидкість та надійність — від ТО до складних ремонтів.',p2:'Говоримо словацькою, російською та українською. Прозорі ціни і чесні поради.'},
+    badges:{b1:'Гарантія на роботу',b2:'Швидкі терміни',b3:'Діагностика всіх марок',b4:'SK / RU / UA'},
+    services:{title:'Послуги'},
+    s:{oil:{t:'Заміна оливи та фільтрів',p:'від 49 €',d:'Швидке обслуговування оливи та фільтрів.'},brakes:{t:'Гальма та ГРМ',p:'від 79 €',d:'Перевірка, ремонт і заміна гальм та ременів/ланцюгів.'},ac:{t:'Кондиціонер',p:'від 49 €',d:'Чистка, заправка та ремонт кондиціонерів.'},tyres:{t:'Шиномонтаж',d:'Перевзування, балансування та ремонт шин.'},diag:{t:'Діагностика',p:'від 29 €',d:'Професійна діагностика авто.'},engine:{t:'Ремонт двигуна і кузова',d:'Комплексний сервіс двигателя і кузова.'}},
+    gallery:{title:'Галерея'},
+    g:{workshop:'Майстерня',tools:'Інструменти',tyres:'Шиномонтаж',ac:'Кондиціонер',diagn:'Діагностика'},
+    contact:{title:'Контакти'},
+    form:{name:'Імʼя',phone:'Телефон',email:'Email',msg:'Повідомлення',send:'Надіслати',saved:'Надіслано! Ми звʼяжемося з вами.'},
+    map:{title:'Де нас знайти'},
+    footer:{rights:'Усі права захищені'}
+  }
+};
+const i18n = {
+  cur:'sk',
+  t(path){ let node = dict[this.cur]; path.split('.').forEach(k=>node=node?.[k]); return node ?? path; },
+  apply(lang){ this.cur = lang; document.documentElement.lang = lang; document.querySelectorAll('[data-i18n]').forEach(el=>{ const key = el.getAttribute('data-i18n'); const val = this.t(key); if(val) el.textContent = val; }); document.querySelectorAll('.lang button').forEach(b=>b.classList.toggle('active', b.dataset.lang===lang)); }
+};
+
+document.querySelectorAll('.lang button').forEach(btn=>btn.addEventListener('click',()=>i18n.apply(btn.dataset.lang)));
+i18n.apply('sk');
+
+// SAFE: don't use optional chaining on the assignment LHS
+(function setYear(){
+  const yEl = document.getElementById('year');
+  if (yEl) yEl.textContent = String(new Date().getFullYear());
+})();
+
+// Image persistence bindings
+function initImages(){
+  const heroBtn = document.getElementById('setHero'); if(heroBtn) heroBtn.addEventListener('click', setHero);
+  // bindTileEditors(); // removed so no "Nastaviť foto" buttons appear
+  applyHero();
+  applyGallery();
+}
+
+if(document.readyState === 'loading'){
+  document.addEventListener('DOMContentLoaded', initImages);
+}else{ initImages(); }
+
+/* --- Lightweight self-tests (won't throw) --- */
+(function selfTests(){
+  try{
+    const probe = document.createElement('span');
+    probe.textContent = '';
+    const yearOk = String(new Date().getFullYear()).length === 4;
+    console.assert(yearOk, 'Year format test');
+
+    const keys = ['menu.home','hero.title','form.send'];
+    const tOk = keys.every(k => typeof i18n.t(k) === 'string');
+    console.assert(tOk, 'i18n lookup test');
+
+    console.log('[Silver Company] Tests passed');
+  }catch(err){ console.warn('[Silver Company] Self-tests issue:', err); }
+})();
+</script>
+</body>
+</html><form action="https://formspree.io/f/xovyadpe" method="POST">
+  <input type="text" name="name" required placeholder="Meno a priezvisko">
+  <input type="email" name="email" required placeholder="email@...">
+  <textarea name="message" required placeholder="Správa"></textarea>
+  <button type="submit">Odoslať</button>
+</form><form action="https://formspree.io/f/xovyadpe" method="POST">
+  <label for="name">Meno</label>
+  <input type="text" id="name" name="name" required placeholder="Meno a priezvisko"/>
+
+  <label for="phone">Telefón</label>
+  <input type="text" id="phone" name="phone" placeholder="+421 ..."/>
+
+  <label for="email">Email</label>
+  <input type="email" id="email" name="email" required placeholder="email@..."/>
+
+  <label for="message">Správa</label>
+  <textarea id="message" name="message" required placeholder="Ako vám môžeme pomôcť?"></textarea>
+
+  <button class="btn primary" type="submit">Odoslať</button>
+</form><form action="https://formspree.io/f/xovyadpe" method="POST">
+  <label for="name">Meno</label>
+  <input type="text" id="name" name="name" required placeholder="Meno a priezvisko"/>
+
+  <label for="phone">Telefón</label>
+  <input type="text" id="phone" name="phone" placeholder="+421 ..."/>
+
+  <label for="email">Email</label>
+  <input type="email" id="email" name="email" required placeholder="email@..."/>
+
+  <label for="message">Správa</label>
+  <textarea id="message" name="message" required placeholder="Ako vám môžeme pomôcť?"></textarea>
+
+  <button class="btn primary" type="submit">Odoslať</button>
+</form><form action="https://formspree.io/f/xovyadpe" method="POST">
+  <label for="name">Meno</label>
+  <input type="text" id="name" name="name" required placeholder="Meno a priezvisko"/>
+
+  <label for="phone">Telefón</label>
+  <input type="text" id="phone" name="phone" placeholder="+421 ..."/>
+
+  <label for="email">Email</label>
+  <input type="email" id="email" name="email" required placeholder="email@..."/>
+
+  <label for="message">Správa</label>
+  <textarea id="message" name="message" required placeholder="Ako vám môžeme pomôcť?"></textarea>
+
+  <button class="btn primary" type="submit">Odoslať</button>
+</form><!-- CONTACT -->
+<section id="contact">
+  <div class="container contact-grid">
+    <div class="card">
+      <h2 class="section-title" data-i18n="contact.title">Kontakt</h2>
+      <form action="https://formspree.io/f/xovyadpe" method="POST">
+        <label for="name">Meno</label>
+        <input type="text" id="name" name="name" required placeholder="Meno a priezvisko" />
+
+        <label for="phone">Telefón</label>
+        <input type="text" id="phone" name="phone" placeholder="+421 ..." />
+
+        <label for="email">Email</label>
+        <input type="email" id="email" name="email" required placeholder="email@..." />
+
+        <label for="message">Správa</label>
+        <textarea id="message" name="message" required placeholder="Ako vám môžeme pomôcť?"></textarea>
+
+        <button class="btn primary" type="submit">Odoslať</button>
+      </form>
+    </div>
+    <div class="map">
+      <div>
+        <h3 style="margin:0 0 8px" data-i18n="map.title">Kde nás nájdete</h3>
+        <p style="margin:0 0 12px">Vinohradnicka 3, Bratislava — Podunajské Biskupice, 82106</p>
+        <svg viewBox="0 0 600 360" aria-hidden="true">
+          <defs>
+            <linearGradient id="m" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#0e121b"/><stop offset="1" stop-color="#151b28"/></linearGradient>
+          </defs>
+          <rect width="600" height="360" rx="14" fill="url(#m)" />
+          <g stroke="#253049" stroke-width="2" opacity=".8">
+            <path d="M40 60h520M40 120h520M40 180h520M40 240h520M40 300h520" />
+            <path d="M100 40v280M200 40v280M300 40v280M400 40v280M500 40v280" />
+          </g>
+          <g>
+            <circle cx="410" cy="190" r="10" fill="#1f6fff" />
+            <rect x="420" y="166" width="160" height="56" rx="8" fill="rgba(31,111,255,.18)" stroke="#1f6fff"/>
+            <text x="428" y="195" fill="#cdd6e6" font-family="Poppins, Arial" font-size="16">Silver Company</text>
+            <text x="428" y="214" fill="#9aa6b2" font-family="Poppins, Arial" font-size="13">Vinohradnicka 3</text>
+          </g>
+        </svg>
+        <p style="margin:12px 0 0">📞 <a href="tel:+421949725946">+421 949 725 946</a><br>✉️ <a href="mailto:kavalenkaigor@gmail.com">kavalenkaigor@gmail.com</a><br>🕒 Po–Pi: 8:00–17:00 • So: 9:00–13:00</p>
+      </div>
+    </div>
+  </div>
+</section>
